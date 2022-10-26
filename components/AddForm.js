@@ -3,8 +3,14 @@ import { IconButton } from "@mui/material"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import Paper from "@mui/material/Paper"
 import InputBase from "@mui/material/InputBase"
+import { useRouter } from "next/router"
+import { ObjectId } from "bson"
 
-export default function AddForm({ label }) {
+export default function AddForm({ label, path, requestType }) {
+  const router = useRouter()
+  const { id } = router.query
+  console.log("id inside AddForm", id)
+
   const [input, setInput] = useState({ name: "" })
   console.log("input", input)
 
@@ -21,19 +27,29 @@ export default function AddForm({ label }) {
 
   //POST method to add entry to MONGODB
   const postData = async (input) => {
+    const result = id ? { ...input, listId: ObjectId(id) } : input
+    console.log("result in postData", result)
     try {
-      const res = await fetch("/api/lists", {
+      const res = await fetch(`/api/${path}`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(input),
+        body: JSON.stringify(result),
       })
+        .then((res) => res.json())
+        .then((res) => {
+          if (!res.success) {
+            console.log("error running")
+            throw new Error(res.status)
+          } else {
+            //set state here if no error with a callback
+            console.log("res", res)
+            requestType(res.data)
+          }
+        })
       //Throw error if FETCH API request fails
-      if (!res.ok) {
-        throw new Error(res.status)
-      }
     } catch (error) {
       console.log("Failed to add list name ", error)
     }

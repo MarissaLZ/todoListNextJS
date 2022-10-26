@@ -8,6 +8,7 @@ import { Schema, model, models } from "mongoose"
 // Schemas are then "compiled" into models using the mongoose.model()
 //  method. Once you have a model you can use it to find,
 //  create, update, and delete objects of the given type.
+
 const listNamesSchema = new Schema({
   name: String,
 })

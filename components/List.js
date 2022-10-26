@@ -5,10 +5,9 @@ export default function List({ list }) {
     <>
       <ul>
         {list.map((item) => (
-          <Task key={item} item={item} />
+          <Task key={item._id} item={item} />
         ))}
       </ul>
-      List
     </>
   )
 }
