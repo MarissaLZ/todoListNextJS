@@ -1,13 +1,14 @@
 import React from "react"
-import ListItem from "./ListItem"
+import List from "@mui/material/List"
+import ListItem from "./ListName"
 
 export default function CurrentLists({ listNames }) {
   return (
-    <ul>
+    <List>
       {listNames.map((item) => (
         <ListItem key={item._id} item={item} />
       ))}
-    </ul>
+    </List>
   )
 }
 // [{ _id: "6354d986c88f4060c9763176", name: "mffvcf", __v: 0 }]

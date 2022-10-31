@@ -9,10 +9,8 @@ import { ObjectId } from "bson"
 export default function AddForm({ label, path, requestType }) {
   const router = useRouter()
   const { id } = router.query
-  console.log("id inside AddForm", id)
 
   const [input, setInput] = useState({ name: "" })
-  console.log("input", input)
 
   const handleChange = (e) => {
     setInput({ name: e.target.value })
@@ -21,14 +19,18 @@ export default function AddForm({ label, path, requestType }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     postData(input)
-    console.log("input", input)
     setInput({ name: "" })
   }
 
   //POST method to add entry to MONGODB
   const postData = async (input) => {
     const result = id ? { ...input, listId: ObjectId(id) } : input
-    console.log("result in postData", result)
+    //strucutre send it
+    // {name: "marissa",
+    // listId: ObjectId("283747477484")
+    //}
+    //consider using axios or library to shorten code
+    //or nextjs swr
     try {
       const res = await fetch(`/api/${path}`, {
         method: "POST",

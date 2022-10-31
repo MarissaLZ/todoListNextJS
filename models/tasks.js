@@ -10,7 +10,14 @@ const tasksSchema = new Schema({
     required: true,
     unique: true,
   },
-  status: String,
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 //status: active, deleted, complete
