@@ -10,6 +10,8 @@
     "strictFunctionTypes": true /* Enable strict checking of function types. */,
     "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
     "noUnusedParameters": true /* Report errors on unused parameters. */,
+    "strictPropertyInitialization": true,
+    "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
 
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -21,6 +23,11 @@
     "isolatedModules": true,
     "jsx": "preserve"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/TodoList.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "components/TodoList.tsx"
+  ],
   "exclude": ["node_modules"]
 }

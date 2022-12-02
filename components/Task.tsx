@@ -6,8 +6,18 @@ import ListItemText from "@mui/material/ListItemText"
 import Checkbox from "@mui/material/Checkbox"
 import IconButton from "@mui/material/IconButton"
 import HighlightOffIcon from "@mui/icons-material/HighlightOff"
+import { Todo } from "./TodoList"
 
-export default function Task({ item, deleteTask, toggleTaskComplete }) {
+interface TaskProps {
+  item: Todo
+  deleteTask: Function
+  toggleTaskComplete: Function
+}
+export default function Task({
+  item,
+  deleteTask,
+  toggleTaskComplete,
+}: TaskProps) {
   // this grabs the id from [id].js
   // const router = useRouter()
   // const { id } = router.query
@@ -19,18 +29,24 @@ export default function Task({ item, deleteTask, toggleTaskComplete }) {
     deleted: item.deleted,
   })
 
-  const handleToggle = (e) => {
+  const handleToggle = (e: React.ChangeEvent<HTMLInputElement>): void => {
     console.log("checked?", e.target.checked)
     setChecked({ completed: e.target.checked })
     changeCompletionRequest({ completed: e.target.checked })
   }
-  const handleClick = () => {
+  const handleClick = (): void => {
     setStatus({ deleted: !status.deleted })
     deleteTaskRequest({ deleted: !status.deleted })
   }
 
   //PUT method to mark entry complete to MONGODB
-  const changeCompletionRequest = async (updatedTask) => {
+
+  interface Completed {
+    completed: boolean
+  }
+  const changeCompletionRequest = async (
+    updatedTask: Completed
+  ): Promise<void> => {
     console.log("updated task", updatedTask)
     try {
       const res = await fetch("/api/lists/tasks", {
@@ -58,8 +74,12 @@ export default function Task({ item, deleteTask, toggleTaskComplete }) {
     }
   }
 
+  interface Deleted {
+    deleted: boolean
+  }
   //PUT method to add entry to MONGODB
-  const deleteTaskRequest = async (updatedTask) => {
+  //An async function always returns a promise
+  const deleteTaskRequest = async (updatedTask: Deleted): Promise<void> => {
     try {
       //with dynamic api routing
       //const res = await fetch(`/api/lists/tasks/${item._id}` andchange name of file to [id]

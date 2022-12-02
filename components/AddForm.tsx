@@ -6,31 +6,50 @@ import InputBase from "@mui/material/InputBase"
 import { useRouter } from "next/router"
 import { ObjectId } from "bson"
 
-export default function AddForm({ label, path, requestType }) {
+interface AddFormProps {
+  label: string
+  path: string
+  requestType: Function
+}
+
+export default function AddForm({ label, path, requestType }: AddFormProps) {
   const router = useRouter()
-  const { id } = router.query
+  //grab id of clicked list
+  // id will appear if there is dynamic routing
+  const id = router.query.id
+  console.log("id", id)
 
   const [input, setInput] = useState({ name: "" })
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput({ name: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     postData(input)
     setInput({ name: "" })
   }
 
+  interface Input {
+    name: string
+  }
+
   //POST method to add entry to MONGODB
-  const postData = async (input) => {
-    const result = id ? { ...input, listId: ObjectId(id) } : input
+  const postData = async (input: Input) => {
+    let result
+    if (typeof id === "string") {
+      const myObjectId = new ObjectId(id)
+      console.log("m,yObjectId", myObjectId)
+      result = { ...input, listId: myObjectId }
+    } else {
+      result = input
+    }
+    console.log("result", result)
     //strucutre send it
     // {name: "marissa",
     // listId: ObjectId("283747477484")
     //}
-    //consider using axios or library to shorten code
-    //or nextjs swr
     try {
       const res = await fetch(`/api/${path}`, {
         method: "POST",
@@ -42,6 +61,8 @@ export default function AddForm({ label, path, requestType }) {
       })
         .then((res) => res.json())
         .then((res) => {
+          //catch only response to throwing an error if it is a server 500 error
+          //this wouod be different if it was axios
           if (!res.success) {
             console.log("error running")
             throw new Error(res.status)

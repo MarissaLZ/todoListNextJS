@@ -1,8 +1,12 @@
 import connectMongo from "../../../lib/connectMongo"
 import ListNames from "../../../models/ListNames"
+import { NextApiRequest, NextApiResponse } from "next"
 
 // bc next allows for server sided rendering it allows us to create our own api
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<void> {
   const { method } = req
 
   //connect to database

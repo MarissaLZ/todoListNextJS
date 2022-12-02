@@ -1,9 +1,14 @@
 import connectMongo from "../../../../lib/connectMongo"
 import Tasks from "../../../../models/tasks"
+import { NextApiRequest, NextApiResponse } from "next"
+
 // bc next allows for server sided rendering it allows us to create our own api
 //request is from browser and response is what I send back
 //look at express request and response
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { method } = req
   const id = req.body.id
   //the first is the post request

@@ -1,21 +1,32 @@
 import React, { useState } from "react"
-import Head from "next/head"
-import Link from "next/Link"
 import AddForm from "../components/AddForm"
 import CurrentLists from "../components/CurrentLists"
 import connectMongo from "../lib/connectMongo"
-import ListNames from "../models/ListNames"
+import ListNames from "../models/listNames"
+import { GetServerSideProps } from "next"
 
-export default function Home({ listNames }) {
-  //best practice to pass the props from getServerSidedProps in the initial state?
+export interface ListInfo {
+  name: string
+  __v: number
+  _id: string
+}
+
+interface HomeProps {
+  listNames: ListInfo[]
+}
+
+export default function Home({ listNames }: HomeProps) {
+  //best practice to pass the props from getServerSidedProps in the initial state
+
+  console.log("listNames", listNames)
   const [ListNames, setListNames] = useState(listNames)
 
-  const addList = (name) => {
-    setListNames([...ListNames, name])
+  const addList = (newList: ListInfo) => {
+    setListNames([...ListNames, newList])
   }
   return (
     <>
-      <AddForm label={"Add a List"} path={"lists"} requestType={addList} />
+      <AddForm label="Add a List" path="lists" requestType={addList} />
       <CurrentLists listNames={ListNames} />
     </>
   )
@@ -26,7 +37,7 @@ export default function Home({ listNames }) {
 // is never sent to the client. This makes it a great place to implement our MongoDB queries
 
 // get listNames data from mongo
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps = async () => {
   //connect to MONGODB
   await connectMongo()
 
@@ -38,6 +49,7 @@ export async function getServerSideProps() {
       listName._id = listName._id.toString()
       return listName
     })
+
     return {
       props: { listNames: listNames },
     }
