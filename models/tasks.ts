@@ -1,6 +1,13 @@
-import mongoose, { Schema, model, models } from "mongoose"
+import mongoose, { Schema, model, models, Model } from "mongoose"
 
-const tasksSchema = new Schema({
+interface ITasksSchema extends mongoose.Document {
+  listId: mongoose.Schema.Types.ObjectId
+  name: String
+  deleted: boolean
+  completed: boolean
+}
+
+const tasksSchema = new Schema<ITasksSchema>({
   listId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "ListNames",
@@ -20,7 +27,9 @@ const tasksSchema = new Schema({
   },
 })
 
-const Tasks = models.Tasks || model("Tasks", tasksSchema)
+const Tasks =
+  (models.Tasks as Model<ITasksSchema>) ||
+  model<ITasksSchema>("Tasks", tasksSchema)
 
 export default Tasks
 

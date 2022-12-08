@@ -1,7 +1,7 @@
 import connectMongo from "../../../lib/connectMongo"
-import ListNames from "../../../models/ListNames"
+import ListNames from "../../../models/listNames"
 import { NextApiRequest, NextApiResponse } from "next"
-
+//adds a new list to mongoDB
 // bc next allows for server sided rendering it allows us to create our own api
 export default async function handler(
   req: NextApiRequest,

@@ -12,8 +12,8 @@ interface AddFormProps {
   requestType: Function
 }
 
-export default function AddForm({ label, path, requestType }: AddFormProps) {
-  const router = useRouter()
+const AddForm = ({ label, path, requestType }: AddFormProps) => {
+  const router = useRouter() // look at why this works when commented out
   //grab id of clicked list
   // id will appear if there is dynamic routing
   const id = router.query.id
@@ -102,3 +102,4 @@ export default function AddForm({ label, path, requestType }: AddFormProps) {
     </Paper>
   )
 }
+export default AddForm

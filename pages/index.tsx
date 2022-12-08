@@ -35,6 +35,9 @@ export default function Home({ listNames }: HomeProps) {
 // ssp method runs on the backend, gets data, and sends it into
 // the React component via props. The code within getServerSideProps()
 // is never sent to the client. This makes it a great place to implement our MongoDB queries
+//NextJS uses this function to prerender our page with the data returned by this function.
+//getServerSideProps is server-side code even though it is in a client-side file.
+// When you call a server-side route (e.g., api/users) from getServerSideProps or other static functions, it doesn't work.
 
 // get listNames data from mongo
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -42,10 +45,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
   await connectMongo()
 
   try {
+    //throw new Error()
     //finds all items in the collection when using only the {}
     const result = await ListNames.find({})
     const listNames = result.map((doc) => {
-      const listName = doc.toObject()
+      const listName = doc.toObject<ListInfo>()
       listName._id = listName._id.toString()
       return listName
     })
@@ -54,7 +58,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
       props: { listNames: listNames },
     }
   } catch (error) {
-    console.log(error)
+    console.log("error is ssp", error)
+    //Setting the notFound prop to true in the catch block, we trigger Next.js’s internal error handling system to return a 404 page
     return {
       notFound: true,
     }

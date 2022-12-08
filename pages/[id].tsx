@@ -5,10 +5,9 @@ import connectMongo from "../lib/connectMongo"
 import { ObjectId } from "bson"
 import TodoList from "../components/TodoList"
 import { Todo } from "../components/TodoList"
-import { GetServerSideProps } from "next"
-import { ParsedUrlQuery } from "querystring"
+import { GetServerSideProps, GetServerSidePropsResult, PreviewData } from "next"
 import { GetServerSidePropsContext } from "next"
-import { PreviewData } from "next"
+import { ParsedUrlQuery } from "querystring"
 //Do Not Fetch an API Route from getStaticProps or getStaticPaths bc these only run server sided
 // get tasks data from mongo
 //use id to go to the db and find all the items that match. return as prop
@@ -18,9 +17,15 @@ import { PreviewData } from "next"
 // interface Params extends ParsedUrlQuery {
 //   params: { id: string }
 // }
+
+interface ReturnItems {
+  props: { [key: string]: any }
+}
+
+//why is this working? { props: { [key: string]: any } }. Before there was no object
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
-) => {
+): Promise<ReturnItems> => {
   console.log("context", context)
   //connect to MONGODB
   await connectMongo()
@@ -39,45 +44,48 @@ export const getServerSideProps: GetServerSideProps = async (
     // if context.params is an array of parameters theb throw an error
     if (Array.isArray(context.params.id)) {
       throw new Error(`too many params}`)
-    } else {
-      const incompleteResult = await Tasks.find({
-        listId: new ObjectId(context.params.id), //{id: "3u487474747"} possibly an array [{id: "39e9r9r"}, {}]
-        deleted: false,
-        completed: false,
-      })
-      const incompleteTasks = incompleteResult.map((doc) => {
-        const incomplete = doc.toObject()
-        incomplete._id = incomplete._id.toString()
-        incomplete.listId = incomplete.listId.toString()
-        return incomplete
-      })
+    }
+    const incompleteResult = await Tasks.find({
+      listId: new ObjectId(context.params.id), //{id: "3u487474747"} possibly an array [{id: "39e9r9r"}, {}]
+      deleted: false,
+      completed: false,
+    })
+    //check if matches schema
+    const incompleteTasks = incompleteResult.map((doc) => {
+      const incomplete = doc.toObject<Todo>()
+      incomplete._id = incomplete._id.toString()
+      incomplete.listId = incomplete.listId.toString()
+      return incomplete
+    })
 
-      //finding in mongodb the item that matches this structure and the
-      const completedResult = await Tasks.find({
-        listId: new ObjectId(context.params.id),
-        deleted: false,
-        completed: true,
-      })
-      const completedTasks = completedResult.map((doc) => {
-        const completed = doc.toObject()
-        completed._id = completed._id.toString()
-        completed.listId = completed.listId.toString()
-        return completed
-      })
-      console.log("completed", completedTasks)
+    //finding in mongodb the item that matches this structure and the
+    const completedResult = await Tasks.find({
+      listId: new ObjectId(context.params.id),
+      deleted: false,
+      completed: true,
+    })
 
-      return {
-        props: {
-          incompleteTasksData: incompleteTasks,
-          completedTasksData: completedTasks,
-        },
-      }
+    const completedTasks = completedResult.map((doc) => {
+      const completed = doc.toObject<Todo>() //id becomes unknown when converting to object. Change the type from task model to Todo interface
+      completed._id = completed._id.toString()
+      completed.listId = completed.listId.toString()
+      return completed
+    })
+    console.log("completed", completedTasks)
+
+    return {
+      props: {
+        incompleteTasksData: incompleteTasks,
+        completedTasksData: completedTasks,
+      },
     }
   } catch (error) {
     console.log("error in [id] while getting ssp", error)
-    return {
-      notFound: true,
-    }
+    throw error
+    //ask sbout making this a type for the return
+    // return {
+    //   notFound: true,
+    // }
   }
 }
 
