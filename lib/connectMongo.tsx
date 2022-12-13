@@ -8,7 +8,7 @@ const connectMongo = async () => {
   if (URI == "" || URI == undefined) {
     throw new Error("Invalid URI")
   } else {
-    mongoose.connect(URI)
+    return mongoose.connect(URI)
   }
 }
 

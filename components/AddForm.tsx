@@ -12,6 +12,9 @@ interface AddFormProps {
   requestType: Function
 }
 
+export interface Input {
+  name: string
+}
 const AddForm = ({ label, path, requestType }: AddFormProps) => {
   const router = useRouter() // look at why this works when commented out
   //grab id of clicked list
@@ -31,16 +34,12 @@ const AddForm = ({ label, path, requestType }: AddFormProps) => {
     setInput({ name: "" })
   }
 
-  interface Input {
-    name: string
-  }
-
   //POST method to add entry to MONGODB
   const postData = async (input: Input) => {
     let result
     if (typeof id === "string") {
       const myObjectId = new ObjectId(id)
-      console.log("m,yObjectId", myObjectId)
+      console.log("myObjectId", myObjectId)
       result = { ...input, listId: myObjectId }
     } else {
       result = input

@@ -26,7 +26,7 @@ interface ReturnItems {
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ): Promise<ReturnItems> => {
-  console.log("context", context)
+  //console.log("context", context)
   //connect to MONGODB
   await connectMongo()
 
@@ -64,7 +64,7 @@ export const getServerSideProps: GetServerSideProps = async (
       deleted: false,
       completed: true,
     })
-
+    //
     const completedTasks = completedResult.map((doc) => {
       const completed = doc.toObject<Todo>() //id becomes unknown when converting to object. Change the type from task model to Todo interface
       completed._id = completed._id.toString()

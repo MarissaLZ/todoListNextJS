@@ -6,13 +6,11 @@ import ListName from "../components/ListName"
 import Task from "../components/Task"
 import TodoList from "../components/TodoList"
 
-//check if addi g an item adds and tiem and if deleting an item deleted one
-//see if an item is checked off
 describe("AddForm", () => {
   test("Component renders and passes props", () => {
     const addList = jest.fn()
     //render(<AddForm label="Add a List" path="lists" requestType={addList} />)
-    // expect(screen.getByText("Add a List")).toBeInTheDocument()
+    //expect(screen.getByText("Add a List")).toBeInTheDocument()
   })
   test("CurrentLists Component passes props", () => {
     const names = [
