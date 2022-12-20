@@ -19,8 +19,6 @@ const AddForm = ({ label, path, requestType }: AddFormProps) => {
   const router = useRouter() // look at why this works when commented out
   //grab id of clicked list
   // id will appear if there is dynamic routing
-  const id = router.query.id
-  console.log("id", id)
 
   const [input, setInput] = useState({ name: "" })
 
@@ -36,6 +34,9 @@ const AddForm = ({ label, path, requestType }: AddFormProps) => {
 
   //POST method to add entry to MONGODB
   const postData = async (input: Input) => {
+    const id = router.query.id
+    console.log("id", id)
+
     let result
     if (typeof id === "string") {
       const myObjectId = new ObjectId(id)

@@ -41,10 +41,12 @@ export default function Home({ listNames }: HomeProps) {
 
 // get listNames data from mongo
 export const getServerSideProps: GetServerSideProps = async () => {
-  //connect to MONGODB
-  await connectMongo()
-
   try {
+    //connect to MONGODB
+
+    await connectMongo()
+    console.log("gssp runs")
+
     //throw new Error()
     //finds all items in the collection when using only the {}
     const result = await ListNames.find({})

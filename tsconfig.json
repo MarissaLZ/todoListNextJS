@@ -29,7 +29,8 @@
     "**/*.tsx",
     "components/TodoList.tsx",
     "jest.config.js",
-    "pages/500.js"
+    "pages/500.js",
+    "__tests__/ssp.test.js"
   ],
   "exclude": ["node_modules"]
 }

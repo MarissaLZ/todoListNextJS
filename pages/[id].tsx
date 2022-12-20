@@ -13,7 +13,6 @@ import { ParsedUrlQuery } from "querystring"
 //use id to go to the db and find all the items that match. return as prop
 
 //consider writing this is a different way
-
 // interface Params extends ParsedUrlQuery {
 //   params: { id: string }
 // }
@@ -21,11 +20,14 @@ import { ParsedUrlQuery } from "querystring"
 interface ReturnItems {
   props: { [key: string]: any }
 }
+interface NotFound {
+  notFound: true
+}
 
 //why is this working? { props: { [key: string]: any } }. Before there was no object
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
-): Promise<ReturnItems> => {
+): Promise<ReturnItems | NotFound> => {
   //console.log("context", context)
   //connect to MONGODB
   await connectMongo()
@@ -83,9 +85,9 @@ export const getServerSideProps: GetServerSideProps = async (
     console.log("error in [id] while getting ssp", error)
     throw error
     //ask sbout making this a type for the return
-    // return {
-    //   notFound: true,
-    // }
+    return {
+      notFound: true,
+    }
   }
 }
 
