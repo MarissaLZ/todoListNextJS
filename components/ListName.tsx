@@ -10,7 +10,7 @@ interface ListNameProps {
 export default function ListName({ item }: ListNameProps): JSX.Element {
   return (
     <ListItem>
-      {/* sending the if in query */}
+      {/* sending the id in query */}
       <Link href={`/${item._id}`}>{item.name}</Link>
     </ListItem>
   )

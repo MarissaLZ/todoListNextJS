@@ -4,6 +4,7 @@
 //here you might do the following: keep state b/w pg chages or global css
 
 import { AppProps } from "next/app"
+import React from "react"
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return <Component {...pageProps} />

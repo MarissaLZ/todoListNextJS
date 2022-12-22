@@ -8,6 +8,7 @@ export default async function handler(
   res: NextApiResponse
 ): Promise<void> {
   const { method } = req
+  console.log("req object", req.body)
 
   //connect to database
   await connectMongo()

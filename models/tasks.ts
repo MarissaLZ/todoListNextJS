@@ -15,7 +15,7 @@ const tasksSchema = new Schema<ITasksSchema>({
   name: {
     type: String,
     required: true,
-    unique: true,
+    //unique: true,
   },
   deleted: {
     type: Boolean,

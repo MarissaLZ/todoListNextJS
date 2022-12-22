@@ -10,6 +10,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method } = req
+  console.log("req in api/lists/ tasks", req.body)
   const id = req.body.id
   //the first is the post request
   //req.query only works with parameters and api routes

@@ -3,7 +3,7 @@ import { IconButton } from "@mui/material"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import Paper from "@mui/material/Paper"
 import InputBase from "@mui/material/InputBase"
-import { useRouter } from "next/router"
+import { NextRouter, useRouter } from "next/router"
 import { ObjectId } from "bson"
 
 interface AddFormProps {
@@ -16,10 +16,10 @@ export interface Input {
   name: string
 }
 const AddForm = ({ label, path, requestType }: AddFormProps) => {
-  const router = useRouter() // look at why this works when commented out
+  const router = useRouter()
+
   //grab id of clicked list
   // id will appear if there is dynamic routing
-
   const [input, setInput] = useState({ name: "" })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -34,23 +34,40 @@ const AddForm = ({ label, path, requestType }: AddFormProps) => {
 
   //POST method to add entry to MONGODB
   const postData = async (input: Input) => {
-    const id = router.query.id
-    console.log("id", id)
-
-    let result
-    if (typeof id === "string") {
-      const myObjectId = new ObjectId(id)
-      console.log("myObjectId", myObjectId)
-      result = { ...input, listId: myObjectId }
-    } else {
-      result = input
-    }
-    console.log("result", result)
-    //strucutre send it
-    // {name: "marissa",
-    // listId: ObjectId("283747477484")
-    //}
     try {
+      let result
+
+      if (router === null) {
+        console.log("router is null ")
+        throw new Error("router is null")
+      }
+      console.log(
+        "router.query",
+        router.query,
+        "Object.keys(router.query).length",
+        Object.keys(router.query).length
+      )
+      if (input.name.trim() === "") {
+        throw new Error("unacceptable input ")
+      } else if (Array.isArray(router.query.id)) {
+        throw new Error("query is an array")
+      } else if (router.query.hasOwnProperty("id")) {
+        const myObjectId = new ObjectId(router.query.id)
+        console.log("myObjectId", myObjectId)
+        result = { ...input, listId: myObjectId }
+      } else if (
+        typeof router.query === "object" &&
+        router.query !== null &&
+        router.query.hasOwnProperty("id") === false
+      ) {
+        result = input
+        // {name: "list a"}
+      }
+      console.log("result", result)
+      //structure sent
+      // {name: "task",
+      // listId: ObjectId("283747477484")
+      //}
       const res = await fetch(`/api/${path}`, {
         method: "POST",
         headers: {
@@ -62,7 +79,7 @@ const AddForm = ({ label, path, requestType }: AddFormProps) => {
         .then((res) => res.json())
         .then((res) => {
           //catch only response to throwing an error if it is a server 500 error
-          //this wouod be different if it was axios
+          //this would be different if it was axios
           if (!res.success) {
             console.log("error running")
             throw new Error(res.status)
@@ -74,7 +91,7 @@ const AddForm = ({ label, path, requestType }: AddFormProps) => {
         })
       //Throw error if FETCH API request fails
     } catch (error) {
-      console.log("Failed to add list name ", error)
+      console.log("Failed to add list name in api:", error)
     }
   }
 
